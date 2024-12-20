@@ -8,9 +8,9 @@ namespace CFSeleniumUtilities.Models
     public class WebDriverSource
     {
         /// <summary>
-        /// Target web browser
+        /// Browser Id
         /// </summary>
-        public BrowserProducts BrowserProduct { get; internal set; }
+        public string BrowserId { get; internal set; } = String.Empty;
 
         /// <summary>
         /// Target platform (Linux64, Win64 etc)
@@ -27,9 +27,9 @@ namespace CFSeleniumUtilities.Models
         /// </summary>
         public string URL { get; internal set; }
 
-        public WebDriverSource(BrowserProducts browserProduct, Platforms platform, string url, string version)
+        public WebDriverSource(string browserId, Platforms platform, string url, string version)
         {
-            BrowserProduct = browserProduct;
+            BrowserId = browserId;
             Platform = platform;
             URL = url;
             Version = version;

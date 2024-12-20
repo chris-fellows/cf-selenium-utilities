@@ -17,7 +17,14 @@ namespace CFSeleniumUtilities.WebDriverDownloadSources
     {
         private string _listURL = "";
 
-        public BrowserProducts BrowserProduct => BrowserProducts.Edge;
+        private readonly Browser _browser;
+
+        public EdgeWebDriverDownloadSource(Browser browser)
+        {
+            _browser = browser;
+        }
+
+        public string BrowserId => _browser.Id;
 
         public async Task<List<WebDriverSource>> GetListAsync()
         {

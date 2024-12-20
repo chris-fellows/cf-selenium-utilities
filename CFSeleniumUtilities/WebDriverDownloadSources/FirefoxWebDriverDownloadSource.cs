@@ -16,7 +16,14 @@ namespace CFSeleniumUtilities.WebDriverDownloadSources
     {
         private string _listURL = "";
 
-        public BrowserProducts BrowserProduct => BrowserProducts.Firefox;
+        private readonly Browser _browser;
+
+        public FirefoxWebDriverDownloadSource(Browser browser)
+        {
+            _browser = browser;
+        }
+
+        public string BrowserId => _browser.Id;
 
         public async Task<List<WebDriverSource>> GetListAsync()
         {

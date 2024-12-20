@@ -26,31 +26,31 @@ namespace CFSeleniumUtilitiesConsole
         /// </summary>
         /// <param name="browserProduct"></param>
         /// <exception cref="NotSupportedException"></exception>
-        public void Download(BrowserProducts browserProduct)
+        public void Download(Browser browser)
         {
             // Set web driver local storage
             IWebDriverLocalStorage webDriverLocalStorage = new WebDriverLocalStorage(_webDriverLocalFolder);
 
-            switch (browserProduct)
+            switch (browser.BrowserProduct)
             {
                 case BrowserProducts.Chrome:
-                    DownloadWebDriver(BrowserProducts.Chrome, new ChromeWebDriverDownloadSource(), 
+                    DownloadWebDriver(browser, new ChromeWebDriverDownloadSource(browser), 
                                     new HTTPWebDriverDownloader(), webDriverLocalStorage);
                     break;
                 case BrowserProducts.Edge:
-                    DownloadWebDriver(BrowserProducts.Edge, new EdgeWebDriverDownloadSource(), 
+                    DownloadWebDriver(browser, new EdgeWebDriverDownloadSource(browser), 
                                     new HTTPWebDriverDownloader(), webDriverLocalStorage);
                     break;
                 case BrowserProducts.Firefox:
-                    DownloadWebDriver(BrowserProducts.Firefox, new FirefoxWebDriverDownloadSource(), 
+                    DownloadWebDriver(browser, new FirefoxWebDriverDownloadSource(browser), 
                                     new HTTPWebDriverDownloader(), webDriverLocalStorage);
                     break;
                 case BrowserProducts.Opera:
-                    DownloadWebDriver(BrowserProducts.Opera, new OperaWebDriverDownloadSource(), 
+                    DownloadWebDriver(browser, new OperaWebDriverDownloadSource(browser), 
                                     new HTTPWebDriverDownloader(), webDriverLocalStorage);
                     break;
                 default:
-                    throw new NotSupportedException($"Download of Web Driver for {browserProduct} is not supportd");
+                    throw new NotSupportedException($"Download of Web Driver for {browser.BrowserProduct} is not supportd");
             }
         }
 
@@ -59,7 +59,7 @@ namespace CFSeleniumUtilitiesConsole
         /// </summary>
         /// <param name="browserProduct"></param>
         /// <param name="webDriverDownloadSource"></param>
-        private void DownloadWebDriver(BrowserProducts browserProduct, 
+        private void DownloadWebDriver(Browser browser,
                                         IWebDriverDownloadSource webDriverDownloadSource,
                                         IWebDriverDownloader webDriverDownloader, 
                                         IWebDriverLocalStorage webDriverLocalStorage)
@@ -74,7 +74,7 @@ namespace CFSeleniumUtilitiesConsole
             var webDriverSource = webDriverSources.Last();
 
             // Download web driver package
-            var downloadFolder = Path.Combine(_webDriverDownloadFolder, browserProduct.ToString(), webDriverSource.Version, webDriverSource.Platform.ToString());
+            var downloadFolder = Path.Combine(_webDriverDownloadFolder, browser.Id, webDriverSource.Version, webDriverSource.Platform.ToString());
             webDriverDownloader.DownloadAsync(webDriverSource, downloadFolder).Wait();
 
             // Get web driver package source
@@ -83,7 +83,7 @@ namespace CFSeleniumUtilitiesConsole
             // Unzip web driver package to local storage where it can be used
             var webDriverInfo = new WebDriverInfo()
             {
-                BrowserProduct = webDriverSource.BrowserProduct,
+                BrowserId = browser.Id,
                 Platform = webDriverSource.Platform,
                 Version = webDriverSource.Version
             };

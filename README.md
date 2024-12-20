@@ -1,2 +1,5 @@
 # cf-selenium-utilities
-Selenium utilities. Includes download of web driver.
+Selenium utilities:
+- WebDriver download.
+- WebDriver factory with custom config.
+- WebDriver proxy server. E.g. BrowserStack

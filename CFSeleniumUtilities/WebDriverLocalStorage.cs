@@ -21,9 +21,9 @@ namespace CFSeleniumUtilities
             _folder = folder;
         }
 
-        private string GetWebDriverFolder(BrowserProducts browserProduct, string version, Platforms platform)
+        private string GetWebDriverFolder(string browserId, string version, Platforms platform)
         {
-            return Path.Combine(_folder, browserProduct.ToString(), version, platform.ToString());
+            return Path.Combine(_folder, browserId, version, platform.ToString());
         }
 
         public void Add(WebDriverInfo webDriverInfo, string sourceFile)
@@ -37,7 +37,7 @@ namespace CFSeleniumUtilities
                 throw new ArgumentException("Only web driver packages in .zip format can be added");
             }
 
-            var webDriverFolder = GetWebDriverFolder(webDriverInfo.BrowserProduct, webDriverInfo.Version, webDriverInfo.Platform);
+            var webDriverFolder = GetWebDriverFolder(webDriverInfo.BrowserId, webDriverInfo.Version, webDriverInfo.Platform);
             Directory.CreateDirectory(webDriverFolder);
 
             // Unzip files. Note that extracting chromedriver-win64 extracts to sub-folder chromedriver-win64
@@ -67,7 +67,7 @@ namespace CFSeleniumUtilities
 
         public void Delete(WebDriverInfo webDriverInfo)
         {
-            var webDriverFolder = GetWebDriverFolder(webDriverInfo.BrowserProduct, webDriverInfo.Version, webDriverInfo.Platform);
+            var webDriverFolder = GetWebDriverFolder(webDriverInfo.BrowserId, webDriverInfo.Version, webDriverInfo.Platform);
             if (Directory.Exists(webDriverFolder))
             {
                 foreach(var file in Directory.GetFiles(webDriverFolder))

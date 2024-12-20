@@ -10,9 +10,9 @@ namespace CFSeleniumUtilities.Models
     public class WebDriverInfo
     {
         /// <summary>
-        /// Browser product
+        /// Browser Id
         /// </summary>
-        public BrowserProducts BrowserProduct { get; set; }
+        public string BrowserId { get; set; } = String.Empty;
 
         /// <summary>
         /// Platform

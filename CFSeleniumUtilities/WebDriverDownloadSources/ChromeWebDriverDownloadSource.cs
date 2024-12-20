@@ -12,7 +12,14 @@ namespace CFSeleniumUtilities.WebDriverDownloadSources
     {
         private string _listURL = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json";
 
-        public BrowserProducts BrowserProduct => BrowserProducts.Chrome;
+        private readonly Browser _browser;
+
+        public ChromeWebDriverDownloadSource(Browser browser)
+        {
+            _browser = browser;
+        }
+
+        public string BrowserId => _browser.Id;
 
         public async Task<List<WebDriverSource>> GetListAsync()
         {
@@ -40,7 +47,7 @@ namespace CFSeleniumUtilities.WebDriverDownloadSources
                     foreach (var item in chromeDriver)
                     {
                         var platform = GetPlatform((string)item["platform"]);
-                        var webDriverInfo = new WebDriverSource(BrowserProduct, platform, (string)item["url"], (string)versionItem["version"]);
+                        var webDriverInfo = new WebDriverSource(_browser.Id, platform, (string)item["url"], (string)versionItem["version"]);
                         webDriverInfos.Add(webDriverInfo);
                     }
                 }

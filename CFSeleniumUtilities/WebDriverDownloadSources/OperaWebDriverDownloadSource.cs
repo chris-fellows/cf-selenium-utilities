@@ -13,7 +13,14 @@ namespace CFSeleniumUtilities.WebDriverDownloadSources
     {
         private string _listURL = "";
 
-        public BrowserProducts BrowserProduct => BrowserProducts.Opera;
+        private readonly Browser _browser;
+
+        public OperaWebDriverDownloadSource(Browser browser)
+        {
+            _browser = browser;
+        }
+
+        public string BrowserId => _browser.Id;
 
         public async Task<List<WebDriverSource>> GetListAsync()
         {

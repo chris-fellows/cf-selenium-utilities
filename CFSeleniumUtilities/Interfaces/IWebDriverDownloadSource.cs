@@ -8,7 +8,8 @@ namespace CFSeleniumUtilities.Interfaces
     /// </summary>
     public interface IWebDriverDownloadSource
     {
-        BrowserProducts BrowserProduct { get; }
+        
+        string BrowserId { get; }
 
         Task<List<WebDriverSource>> GetListAsync();
     }
