@@ -19,6 +19,8 @@ namespace CFSeleniumUtilities.Interfaces
         /// <param name="webDriverInfo"></param>
         void Delete(WebDriverInfo webDriverInfo);
 
+        bool IsExists(WebDriverInfo webDriverInfo);
+
         /// <summary>
         /// Gets list
         /// </summary>

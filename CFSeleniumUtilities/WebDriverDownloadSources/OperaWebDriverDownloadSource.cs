@@ -31,7 +31,7 @@ namespace CFSeleniumUtilities.WebDriverDownloadSources
 
             var webDriverInfos = new List<WebDriverSource>();
 
-            return webDriverInfos;
+            return webDriverInfos.OrderBy(i => i.Version).ThenBy(i => i.BrowserId).ToList();
         }
 
         private static Platforms GetPlatform(string platform)

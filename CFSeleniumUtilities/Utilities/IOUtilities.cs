@@ -27,7 +27,8 @@ namespace CFSeleniumUtilities.Utilities
             // Copy sub-folders
             foreach(var sourceSubFolder in Directory.GetDirectories(sourceFolder))
             {
-                var destinationSubFolder = Path.Combine(destinationFolder, new DirectoryInfo(Path.GetDirectoryName(sourceSubFolder)).Name);
+                //var destinationSubFolder = Path.Combine(destinationFolder, new DirectoryInfo(Path.GetDirectoryName(sourceSubFolder)).Name);
+                var destinationSubFolder = Path.Combine(destinationFolder, new DirectoryInfo(sourceSubFolder).Name);
                 CopyFolder(sourceSubFolder, destinationSubFolder);
             }
         }

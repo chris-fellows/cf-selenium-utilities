@@ -7,6 +7,8 @@ using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
 
 namespace CFSeleniumUtilities.WebDriverFactories
 {
@@ -23,9 +25,11 @@ namespace CFSeleniumUtilities.WebDriverFactories
 
         public string BrowserId => _browser.Id;
 
-        public object Create(WebDriverConfig webDriverConfig)
+        public IWebDriver Create(WebDriverConfig webDriverConfig)
         {
-            throw new NotImplementedException();
+            var webDriver = new ChromeDriver("D:\\Data\\Test\\WebDriverUtilities\\WebDrivers\\chrome\\132.0.6783.0\\Win64");
+
+            return webDriver;
         }
     }
 }

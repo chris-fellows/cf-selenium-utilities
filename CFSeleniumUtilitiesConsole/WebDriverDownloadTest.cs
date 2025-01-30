@@ -12,11 +12,14 @@ namespace CFSeleniumUtilitiesConsole
     /// </summary>
     internal class WebDriverDownloadTest
     {
+        private readonly WebDriverFactory _webDriverFactory;
         private readonly string _webDriverDownloadFolder;      // Folder where web driver packages downloaded to
         private readonly string _webDriverLocalFolder;        // Folder where web driver packages are unzipped to and used from
 
-        public WebDriverDownloadTest(string webDriverDownloadFolder, string webDriverLocalFolder)
+        public WebDriverDownloadTest(WebDriverFactory webDriverFactory,
+                                string webDriverDownloadFolder, string webDriverLocalFolder)
         {
+            _webDriverFactory = webDriverFactory;
             _webDriverDownloadFolder = webDriverDownloadFolder;
             _webDriverLocalFolder = webDriverLocalFolder;
         }   
@@ -38,7 +41,7 @@ namespace CFSeleniumUtilitiesConsole
                                     new HTTPWebDriverDownloader(), webDriverLocalStorage);
                     break;
                 case BrowserProducts.Edge:
-                    DownloadWebDriver(browser, new EdgeWebDriverDownloadSource(browser), 
+                    DownloadWebDriver(browser, new EdgeWebDriverDownloadSource(browser, _webDriverFactory), 
                                     new HTTPWebDriverDownloader(), webDriverLocalStorage);
                     break;
                 case BrowserProducts.Firefox:
@@ -70,24 +73,31 @@ namespace CFSeleniumUtilitiesConsole
             // Get web driver download list            
             var webDriverSources = webDriverDownloadSource.GetListAsync().Result;
 
-            // Set web driver to download
-            var webDriverSource = webDriverSources.Last();
-
-            // Download web driver package
-            var downloadFolder = Path.Combine(_webDriverDownloadFolder, browser.Id, webDriverSource.Version, webDriverSource.Platform.ToString());
-            webDriverDownloader.DownloadAsync(webDriverSource, downloadFolder).Wait();
-
-            // Get web driver package source
-            var webDriverSourceFile = Directory.GetFiles(downloadFolder, "*.zip").First();
-
-            // Unzip web driver package to local storage where it can be used
-            var webDriverInfo = new WebDriverInfo()
+            foreach (var webDriverSource in webDriverSources.Where(s => s.Version.StartsWith("132.")))
             {
-                BrowserId = browser.Id,
-                Platform = webDriverSource.Platform,
-                Version = webDriverSource.Version
-            };
-            webDriverLocalStorage.Add(webDriverInfo, webDriverSourceFile);
+                var webDriverInfo = new WebDriverInfo()
+                {
+                    BrowserId = browser.Id,
+                    Platform = webDriverSource.Platform,
+                    Version = webDriverSource.Version
+                };
+
+                if (!webDriverLocalStorage.IsExists(webDriverInfo)) // Not downloaded already
+                {
+                    // Set web driver to download
+                    //var webDriverSource = webDriverSources.Last();
+
+                    // Download web driver package
+                    var downloadFolder = Path.Combine(_webDriverDownloadFolder, browser.Id, webDriverSource.Version, webDriverSource.Platform.ToString());
+                    webDriverDownloader.DownloadAsync(webDriverSource, downloadFolder).Wait();
+
+                    // Get web driver package source
+                    var webDriverSourceFile = Directory.GetFiles(downloadFolder, "*.zip").First();
+
+                    // Unzip web driver package to local storage where it can be used                    
+                    webDriverLocalStorage.Add(webDriverInfo, webDriverSourceFile);
+                }
+            }
 
             // Get all local web drivers
             var webDriverInfos = webDriverLocalStorage.GetList();

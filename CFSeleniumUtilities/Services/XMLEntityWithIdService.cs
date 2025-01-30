@@ -19,6 +19,8 @@ namespace CFSeleniumUtilities.Services
             _getAllFilePattern = getAllFilePattern;
             _getEntityFileNameByEntityFunction = getEntityFileNameByEntityFunction;
             _getEntityFileNameByIdFunction = getEntityFileNameByIdFunction;
+
+            Directory.CreateDirectory(_folder);
         }
 
         public List<TEntityType> GetAll()

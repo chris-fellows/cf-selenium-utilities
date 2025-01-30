@@ -1,5 +1,6 @@
 ﻿using CFSeleniumUtilities.Enums;
 using CFSeleniumUtilities.Models;
+using OpenQA.Selenium;
 
 namespace CFSeleniumUtilities.Interfaces
 {
@@ -18,6 +19,6 @@ namespace CFSeleniumUtilities.Interfaces
         /// </summary>
         /// <param name="webDriverConfig"></param>
         /// <returns></returns>
-        object Create(WebDriverConfig webDriverConfig);
+        IWebDriver Create(WebDriverConfig webDriverConfig);
     }
 }

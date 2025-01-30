@@ -1,6 +1,7 @@
 ﻿using CFSeleniumUtilities.Enums;
 using CFSeleniumUtilities.Interfaces;
 using CFSeleniumUtilities.Models;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace CFSeleniumUtilities.WebDriverFactories
 
         public string BrowserId => _browser.Id;
 
-        public object Create(WebDriverConfig webDriverConfig)
+        public IWebDriver Create(WebDriverConfig webDriverConfig)
         {
             throw new NotImplementedException();
         }

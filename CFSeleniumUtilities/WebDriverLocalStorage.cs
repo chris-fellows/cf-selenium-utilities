@@ -2,6 +2,7 @@
 using CFSeleniumUtilities.Interfaces;
 using CFSeleniumUtilities.Models;
 using CFSeleniumUtilities.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.IO.Compression;
 using System.Text;
 
@@ -48,9 +49,17 @@ namespace CFSeleniumUtilities
                 archive.Dispose();
             }
 
-            // Copy files
-            IOUtilities.CopyFolder(tempFolder, webDriverFolder);
-
+            // Copy unzipped files to web driver folder. Try and put the exe in this folder rather than a sub-folder            
+            if (!Directory.GetFiles(tempFolder, "*.*").Any() &&
+                Directory.GetDirectories(tempFolder).Length == 1)  // Unzipped to single sub-folder, just copy contents of this
+            {
+                IOUtilities.CopyFolder(Directory.GetDirectories(tempFolder)[0], webDriverFolder);
+            }
+            else    
+            {
+                IOUtilities.CopyFolder(tempFolder, webDriverFolder);
+            }
+                        
             //// Set path to exe
             //if (String.IsNullOrEmpty(webDriverInfo.Path))
             //{
@@ -77,7 +86,15 @@ namespace CFSeleniumUtilities
                 Directory.Delete(webDriverFolder, true);
             }
         }
-           
+
+        public bool IsExists(WebDriverInfo webDriverInfo)
+        {
+            var webDriverFolder = GetWebDriverFolder(webDriverInfo.BrowserId, webDriverInfo.Version, webDriverInfo.Platform);
+            var webDriverInfoFile = Path.Combine(webDriverFolder, "WebDriverInfo.json");
+
+            return File.Exists(webDriverInfoFile);
+        }
+
         public List<WebDriverInfo> GetList()
         {           
             var webDriverInfos = new List<WebDriverInfo>();            
@@ -104,10 +121,26 @@ namespace CFSeleniumUtilities
             var webDriverInfoFile = Path.Combine(folder, "WebDriverInfo.json");
             if (File.Exists(webDriverInfoFile))
             {
-                var webDriverInfo = JSONUtilities.DeserializeFromString<WebDriverInfo>(webDriverInfoFile, JSONUtilities.DefaultJsonSerializerOptions);
+                var webDriverInfo = JSONUtilities.DeserializeFromString<WebDriverInfo>(File.ReadAllText(webDriverInfoFile, Encoding.UTF8), JSONUtilities.DefaultJsonSerializerOptions);
 
-                // Set path to web driver .exe                
-                webDriverInfo.Path = Directory.GetFiles(folder, "*.exe").First();                
+                // Set path to web driver .exe
+                var webDrivers = Directory.GetFiles(folder, "*driver.exe");
+                if (webDrivers.Any())
+                {
+                    webDriverInfo.Path = webDrivers.First();
+                }
+                else    // Check sub-folders for web driver .exe
+                {
+                    foreach(var subFolder in Directory.GetDirectories(folder))
+                    {
+                        webDrivers = Directory.GetFiles(subFolder, "*.exe");
+                        if (webDrivers.Any())
+                        {
+                            webDriverInfo.Path = webDrivers.First();
+                            break;
+                        }
+                    }
+                }
 
                 return webDriverInfo;
             }
